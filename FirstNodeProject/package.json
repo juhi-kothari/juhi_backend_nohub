@@ -4,13 +4,12 @@
   "description": "This is my first node project",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon app",
+    "dev" : "nodemon todo_app",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.1",
-    "multer": "^1.4.5-lts.1"
+    "express": "^4.18.1"
   }
 }
