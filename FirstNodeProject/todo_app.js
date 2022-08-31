@@ -64,56 +64,136 @@ app.post('/task', (req,res)=>{
 //API for getting all the task
 
 app.get('/task' ,(req,res)=>{
+    if(todoList.length!=0){
+        res.status(200).send({
+            status : true,
+            message : "Tasks fetched successfully",
+            data : todoList
     
-    res.status(200).send({
-        status : true,
-        message : "Tasks fetched successfully",
-        data : todoList
+        });
 
-    });
+    }
+    else{
+        res.status(400).send({
+            status : false,
+            message : "Task is not created yet",
+    
+        });
+
+
+    }
+    
 });
 
 
 //API for getting task by id
 
 app.get('/task/:id',(req,res)=>{
-    console.log(req.params);
-    const { id } = req.params;
-    const result = todoList.find(obj => obj.id == id);
+    try{
+        console.log(req.params);
+        const { id } = req.params;
+        var result = {};
+        //const result = todoList.find(obj => obj.id == id);
+        var index = -1;
+        for(var i = 0 ; i<todoList.length;i++){
+            if(id == todoList[i].id){
+                index = i;
+                result =todoList[i];
+            }
 
-    res.status(200).send({
-        status : true,
-        message : "Tasks fetched successfully",
-        data : result
+        }
 
-    });
+        if(index != -1){
+            res.status(200).send({
+                status : true,
+                message : "Tasks fetched successfully",
+                data : result
+        
+            });
+
+        }
+        else{
+            res.status(400).send({
+                status : false,
+                message : "Error: Record not found",
+        
+            });
+
+        }
+    }
+
+      catch(e){
+
+        res.status(400).send({
+            status : false,
+            message : "Error:" + e.message,
+    
+        });
+      }
+
+    
+   
 });
 
 //API for deleting individual task by id
 
 app.delete('/task/:id',(req,res) =>{
     const {id} = req.params;
-    const index = todoList.indexOf(obj => obj.id == id);
+    const index = todoList.findIndex(obj => obj.id == id);
+    const deletedtask = todoList[index];
 
-    todoList.splice(index-1,1);
-    res.status(200).send({
-        status : true,
-        message : "Tasks deleted successfully",
-        data : todoList
+    if(index != -1){
+        todoList.splice(index,1);
+     res.status(200).send({
+         status : true,
+         message : "Tasks deleted successfully",
+         data : deletedtask
 
-    });
+        });
+
+
+    }
+    else{
+        res.status(400).send({
+            status : false,
+            message : "Error: ID is not found",
+    
+        });
+
+    }
+    
     
 });
 
+//API for updating individual task
+
 app.put('/task/:id' ,(req,res)=>{
-
+    const {id} = req.params;
+    const {body} = req;
+    try{
+        for(var i=0 ; i<todoList.length;i++){
+            if(todoList[i].id==id){
+                todoList[i] = {...todoList[i],...body};
+                break;
+            }
+        } 
+        res.status(200).send({
+            status : true,
+            message : "Tasks updated successfully",
+            data : todoList[i]
     
-    res.status(200).send({
-        status : true,
-        message : "Tasks updated successfully",
-        data : todoList
+        });
 
-    });
+    }
+    
+
+    catch(e){
+        res.status(400).send({
+            status : false,
+            message : "Error: Record not found",
+    
+        });
+    }
 });
 
 
